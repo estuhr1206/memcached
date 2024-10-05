@@ -1042,7 +1042,7 @@ static int add_iov(conn *c, const void *buf, int len) {
 
             /* We may need to start a new msghdr if this one is full. */
             if (m->msg_iovlen == IOV_MAX ||
-                (c->msgbytes >= UDP_MAX_PAYLOAD_SIZE)) {
+                (c->msgbytes >= UDP_MAX_PAYLOAD_SIZE_MEMCACHED)) {
                 add_msghdr(c);
                 m = &c->msglist[c->msgused - 1];
             }
@@ -1051,8 +1051,8 @@ static int add_iov(conn *c, const void *buf, int len) {
                 return -1;
 
             /* If the fragment is too big to fit in the datagram, split it up */
-            if (len + c->msgbytes > UDP_MAX_PAYLOAD_SIZE) {
-                leftover = len + c->msgbytes - UDP_MAX_PAYLOAD_SIZE;
+            if (len + c->msgbytes > UDP_MAX_PAYLOAD_SIZE_MEMCACHED) {
+                leftover = len + c->msgbytes - UDP_MAX_PAYLOAD_SIZE_MEMCACHED;
                 len -= leftover;
             } else {
                 leftover = 0;
@@ -7707,9 +7707,9 @@ static void rpc_stat_worker(void *arg) {
 	sstat_raw.busy = 0; // not supported yet
 	sstat_raw.num_cores = runtime_max_cores();
 	sstat_raw.max_cores = (unsigned int)sysconf(_SC_NPROCESSORS_ONLN);
-	sstat_raw.winu_rx = srpc_ops->srpc_stat_winu_rx();
-	sstat_raw.winu_tx = srpc_ops->srpc_stat_winu_tx();
-	sstat_raw.win_tx = srpc_ops->srpc_stat_win_tx();
+	sstat_raw.winu_rx = srpc_ops->srpc_stat_cupdate_rx(); // previously srpc_stat_winu_rx
+	sstat_raw.winu_tx = srpc_ops->srpc_stat_ecredit_tx(); // previously srpc_stat_winu_tx
+	sstat_raw.win_tx = srpc_ops->srpc_stat_credit_tx(); // previously srpc_stat_win_tx
 	sstat_raw.req_rx = srpc_ops->srpc_stat_req_rx();
 	sstat_raw.req_dropped = srpc_ops->srpc_stat_req_dropped();
 	sstat_raw.resp_tx = srpc_ops->srpc_stat_resp_tx();

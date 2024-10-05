@@ -44,7 +44,11 @@
 
 #define DATA_BUFFER_SIZE 2048
 #define UDP_READ_BUFFER_SIZE 1500
-#define UDP_MAX_PAYLOAD_SIZE 1400
+// #define UDP_MAX_PAYLOAD_SIZE 1400
+#define UDP_MAX_PAYLOAD_SIZE_MEMCACHED 1400 // TODO should the caladan version override, or this one?
+#ifndef UDP_MAX_PAYLOAD
+#define UDP_MAX_PAYLOAD UDP_MAX_PAYLOAD_SIZE_MEMCACHED
+#endif
 #define UDP_HEADER_SIZE 8
 #define MAX_SENDBUF_SIZE (256 * 1024 * 1024)
 /* Up to 3 numbers (2 32bit, 1 64bit), spaces, newlines, null 0 */
